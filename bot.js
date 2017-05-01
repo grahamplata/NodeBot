@@ -9,6 +9,10 @@ var board = new five.Board({
     })
 });
 
+var stdin = process.stdin;
+stdin.setRawMode(true);
+stdin.resume();
+
 board.on("ready", function () {
     console.log('ready');
 
@@ -67,9 +71,7 @@ board.on("ready", function () {
         setTimeout(process.exit, 1000);
     }
 
-    var stdin = process.stdin;
-    stdin.setRawMode(true);
-    stdin.resume();
+
 
     stdin.on("keypress", function (chunk, key) {
         if (!key) return;
