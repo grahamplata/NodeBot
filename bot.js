@@ -13,94 +13,68 @@ var stdin = process.stdin;
 stdin.setRawMode(true);
 stdin.resume();
 
-board.on("ready", function () {
-    console.log('ready');
+board.on("ready", function() {
+  console.log('ready');
 
-    var rightWheel = new five.Motor({
-        pins: {
-            pwm: "D0",
-            dir: "D4"
-        },
-        invertPWM: true
-    });
+  var rightWheel = new five.Motor({
+    pins: { pwm: "D0", dir: "D4" },
+    invertPWM: true
+  });
 
-    var leftWheel = new five.Motor({
-        pins: {
-            pwm: "D1",
-            dir: "D5"
-        },
-        invertPWM: true
-    });
+  var leftWheel = new five.Motor({
+    pins: { pwm: "D1", dir: "D5" },
+    invertPWM: true
+  });
 
-    var speed = 255;
+  var speed = 255;
 
-    function reverse() {
-        leftWheel.rev(speed);
-        rightWheel.rev(speed);
-        console.log("reverse");
-    }
+  function reverse() {
+    leftWheel.rev(speed);
+    rightWheel.rev(speed);
+  }
 
-    function forward() {
-        leftWheel.fwd(speed);
-        rightWheel.fwd(speed);
-        console.log("forward");
-    }
+  function forward() {
+    leftWheel.fwd(speed);
+    rightWheel.fwd(speed);
+  }
 
-    function stop() {
-        leftWheel.stop();
-        rightWheel.stop();
-        console.log("stop");
-    }
+  function stop() {
+    leftWheel.stop();
+    rightWheel.stop();
+  }
 
-    function left() {
-        leftWheel.rev(speed);
-        rightWheel.fwd(speed);
-        console.log("left");
-    }
+  function left() {
+    leftWheel.rev(speed);
+    rightWheel.fwd(speed);
+  }
 
-    function right() {
-        leftWheel.fwd(speed);
-        rightWheel.rev(speed);
-        console.log("right");
-    }
+  function right() {
+    leftWheel.fwd(speed);
+    rightWheel.rev(speed);
+  }
 
-    function exit() {
-        leftWheel.rev(0);
-        rightWheel.rev(0);
-        console.log("exiting");
-        setTimeout(process.exit, 1000);
-    }
+  function exit() {
+    leftWheel.rev(0);
+    rightWheel.rev(0);
+    setTimeout(process.exit, 1000);
+  }
 
+  var keyMap = {
+    'up': forward,
+    'down': reverse,
+    'left': left,
+    'right': right,
+    'space': stop,
+    'q': exit
+  };
 
+  var stdin = process.stdin;
+  stdin.setRawMode(true);
+  stdin.resume();
 
-    stdin.on("keypress", function (chunk, key) {
-        if (!key) return;
+  stdin.on("keypress", function(chunk, key) {
+      if (!key || !keyMap[key.name]) return;      
 
-        switch (key.name) {
-            case 'up':
-            case 'w':
-                forward();
-                break;
-
-            case 'down':
-            case 's':
-                reverse();
-                break;
-
-            case 'left':
-            case 'a':
-                left();
-                break;
-
-            case 'right':
-            case 'd':
-                right();
-                break;
-
-            case 'space':
-            case 'escape':
-                stop();
-                break;
-        }
-    });
+      keyMap[key.name]();
+  });
 });
