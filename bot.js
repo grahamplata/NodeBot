@@ -1,33 +1,42 @@
+//imports 
 var five = require("johnny-five");
 var Particle = require("particle-io");
+
+//configuration import
 require('dotenv').config();
 
+// Particle Photon init
 var board = new five.Board({
-    io: new Particle({
-        token: process.env.TOKEN,
-        deviceId: process.env.DEVICE_ID
-    })
+  io: new Particle({
+    token: process.env.TOKEN,
+    deviceId: process.env.DEVICE_ID
+  })
 });
 
-var stdin = process.stdin;
-stdin.setRawMode(true);
-stdin.resume();
-
-board.on("ready", function() {
+board.on("ready", function () {
   console.log('ready');
 
+  //define wheel and motor contol
   var rightWheel = new five.Motor({
-    pins: { pwm: "D0", dir: "D4" },
+    pins: {
+      pwm: "D0",
+      dir: "D4"
+    },
     invertPWM: true
   });
 
   var leftWheel = new five.Motor({
-    pins: { pwm: "D1", dir: "D5" },
+    pins: {
+      pwm: "D1",
+      dir: "D5"
+    },
     invertPWM: true
   });
 
+  // set speed global variable
   var speed = 255;
 
+  // motor functions
   function reverse() {
     leftWheel.rev(speed);
     rightWheel.rev(speed);
@@ -44,21 +53,22 @@ board.on("ready", function() {
   }
 
   function left() {
-    leftWheel.rev(speed);
-    rightWheel.fwd(speed);
+    leftWheel.fwd(speed);
+    rightWheel.rev(speed);
   }
 
   function right() {
-    leftWheel.fwd(speed);
-    rightWheel.rev(speed);
+    leftWheel.rev(speed);
+    rightWheel.fwd(speed);
   }
 
   function exit() {
     leftWheel.rev(0);
     rightWheel.rev(0);
-    setTimeout(process.exit, 1000);
+    setTimeout(process.exit, 1000); // stops with 1sec buffer
   }
 
+  // map keys to functions with object
   var keyMap = {
     'up': forward,
     'down': reverse,
@@ -68,13 +78,14 @@ board.on("ready", function() {
     'q': exit
   };
 
+  // input modes for manual robot control
   var stdin = process.stdin;
   stdin.setRawMode(true);
   stdin.resume();
 
-  stdin.on("keypress", function(chunk, key) {
-      if (!key || !keyMap[key.name]) return;      
+  stdin.on("keypress", function (chunk, key) {
+    if (!key || !keyMap[key.name]) return;
 
-      keyMap[key.name]();
+    keyMap[key.name]();
   });
 });
