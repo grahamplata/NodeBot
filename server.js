@@ -44,7 +44,7 @@ io.sockets.on('connection', function () {
   // On disconnect
   socket.on('disconnect', function () {
 
-    socket.emit('disconnected');
+    socket.emit('disconnected', socket.id);
     console.log('NodeBot has lost connection!');
 
   });

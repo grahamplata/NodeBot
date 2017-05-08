@@ -1,4 +1,9 @@
+// Modules
 import { Component, OnInit } from '@angular/core';
+
+// Services
+import { BotActionsService } from '../../services/bot-actions.service';
+
 
 @Component({
   selector: 'app-controls',
@@ -6,8 +11,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./controls.component.css']
 })
 export class ControlsComponent implements OnInit {
-
-  constructor() { }
 
   ngOnInit() {
   }
