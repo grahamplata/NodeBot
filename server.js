@@ -10,11 +10,10 @@ var Particle = require("particle-io");
 require('dotenv').config();
 
 // On socket conection
-io.sockets.on('connection', function () {
+io.sockets.on('connection', function (socket) {
 
   // On connection emit socket Identifer
-  console.log("socket connected", socket.id);
-  stop(); // Halts bot functions to prevent unwanted momentment on connection 
+  console.log("socket connected");
 
   // On movement command execute directional response
   socket.on('command', function (command) {
@@ -51,38 +50,9 @@ io.sockets.on('connection', function () {
 
 });
 
-// Particle Photon init
-var board = new five.Board({
-  io: new Particle({
-    token: process.env.TOKEN,
-    deviceId: process.env.DEVICE_ID
-  })
-});
+//motor functions 
+// motor functions
 
-board.on("ready", function () {
-  console.log('ready');
-
-  //define wheel and motor contol
-  var rightWheel = new five.Motor({
-    pins: {
-      pwm: "D0",
-      dir: "D4"
-    },
-    invertPWM: true
-  });
-
-  var leftWheel = new five.Motor({
-    pins: {
-      pwm: "D1",
-      dir: "D5"
-    },
-    invertPWM: true
-  });
-
-  // set speed global variable
-  var speed = 255;
-
-  // motor functions
   function reverse() {
     leftWheel.rev(speed);
     rightWheel.rev(speed);
@@ -113,6 +83,37 @@ board.on("ready", function () {
     rightWheel.rev(0);
     setTimeout(process.exit, 1000); // stops with 1sec buffer
   }
+
+// Particle Photon init
+var board = new five.Board({
+  io: new Particle({
+    token: process.env.TOKEN,
+    deviceId: process.env.DEVICE_ID
+  })
+});
+
+board.on("ready", function () {
+  console.log('ready');
+
+  //define wheel and motor contol
+  var rightWheel = new five.Motor({
+    pins: {
+      pwm: "D0",
+      dir: "D4"
+    },
+    invertPWM: true
+  });
+
+  var leftWheel = new five.Motor({
+    pins: {
+      pwm: "D1",
+      dir: "D5"
+    },
+    invertPWM: true
+  });
+
+  // set speed global variable
+  var speed = 255;
 
   // map keys to functions with object
   var keyMap = {

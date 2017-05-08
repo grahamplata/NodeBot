@@ -24,6 +24,7 @@
     "johnny-five": "^0.10.12",
     "particle-io": "^0.14.0",
     "rxjs": "^5.0.1",
+    "socket.io": "^1.7.4",
     "ts-helpers": "^1.1.1",
     "zone.js": "^0.7.2"
   },

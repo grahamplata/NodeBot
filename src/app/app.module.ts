@@ -10,6 +10,9 @@ import { ControlsComponent } from './components/controls/controls.component'; //
 import { FooterComponent } from './components/footer/footer.component'; // Footer 
 import { NotificationsComponent } from './components/notifications/notifications.component'; // Notification Modal || Bar
 
+// Services
+import {BotActionsService} from './services/bot-actions.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +25,7 @@ import { NotificationsComponent } from './components/notifications/notifications
     FormsModule,
     HttpModule
   ],
-  providers: [],
+  providers: [BotActionsService,],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

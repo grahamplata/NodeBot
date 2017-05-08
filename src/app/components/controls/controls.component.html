@@ -1,27 +1,27 @@
 <div class="tile is-ancestor">
   <div class="tile">
     <div class="tile is-parent is-vertical">
-      <article class="tile is-child box notification is-primary">
+      <article class="tile is-child box notification is-primary" (click)="onClick('forward')">
         <p class="title">Forward</p>
         <p class="subtitle">Move the Nodebot Forward</p>
       </article>
-      <article class="tile is-child box notification is-info">
+      <article class="tile is-child box notification is-info" (click)="onClick('reverse')">
         <p class="title">Backward</p>
         <p class="subtitle">Move the Nodebot Backward</p>
       </article>
     </div>
     <div class="tile is-parent">
-      <article class="tile is-child box notification is-danger stop">
+      <article class="tile is-child box notification is-danger stop" (click)="onClick('stop')">
         <p class="title ">Stop</p>
         <p class="subtitle ">Halt all Nodebot functions</p>
       </article>
     </div>
     <div class="tile is-parent is-vertical">
-      <article class="tile is-child box notification is-primary">
+      <article class="tile is-child box notification is-primary" (click)="onClick('left')">
         <p class="title">Left</p>
         <p class="subtitle">Move the Nodebot Left</p>
       </article>
-      <article class="tile is-child box notification is-info">
+      <article class="tile is-child box notification is-info" (click)="onClick('right')">
         <p class="title">Right</p>
         <p class="subtitle">Move the Nodebot Right</p>
       </article>
