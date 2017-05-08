@@ -1,9 +1,23 @@
 //imports 
+var app = require('http').createServer();
+var io = require('socket.io').listen(app);
+var port = 8888;
+var fs = require('fs');
 var five = require("johnny-five");
 var Particle = require("particle-io");
 
 //configuration import
 require('dotenv').config();
+
+// On socket conection
+io.sockets.on('connection', function () {
+
+  // On connection emit socket Identifer
+  console.log("socket connected", socket.id);
+  stop(); // Halts bot functions to prevent unwanted momentment on connection
+
+
+});
 
 // Particle Photon init
 var board = new five.Board({

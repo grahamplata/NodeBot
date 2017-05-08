@@ -9,15 +9,3 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
-.title {
-    text-align: center;
-}
-
-.subtitle {
-    text-align: center;
-}
-
-.stop {
-    padding-top: 50%;
-}
