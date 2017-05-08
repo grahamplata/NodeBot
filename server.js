@@ -14,8 +14,40 @@ io.sockets.on('connection', function () {
 
   // On connection emit socket Identifer
   console.log("socket connected", socket.id);
-  stop(); // Halts bot functions to prevent unwanted momentment on connection
+  stop(); // Halts bot functions to prevent unwanted momentment on connection 
 
+  // On movement command execute directional response
+  socket.on('command', function (command) {
+
+    // Console Log Command
+    console.log("bot: " + command);
+    switch (command) {
+
+      case 'forward':
+        forward();
+        break;
+      case 'reverse':
+        reverse();
+        break;
+      case 'left':
+        left();
+        break;
+      case 'right':
+        right();
+        break;
+      case 'stop':
+        stop();
+        break;
+    };
+  });
+
+  // On disconnect
+  socket.on('disconnect', function () {
+
+    socket.emit('disconnected');
+    console.log('NodeBot has lost connection!');
+
+  });
 
 });
 
@@ -103,3 +135,6 @@ board.on("ready", function () {
     keyMap[key.name]();
   });
 });
+
+console.log("listening on port: ", port);
+app.listen(port);
