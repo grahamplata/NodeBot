@@ -9,80 +9,6 @@ var Particle = require("particle-io");
 //configuration import
 require('dotenv').config();
 
-// On socket conection
-io.sockets.on('connection', function (socket) {
-
-  // On connection emit socket Identifer
-  console.log("socket connected");
-
-  // On movement command execute directional response
-  socket.on('command', function (command) {
-
-    // Console Log Command
-    console.log("bot: " + command);
-    switch (command) {
-
-      case 'forward':
-        forward();
-        break;
-      case 'reverse':
-        reverse();
-        break;
-      case 'left':
-        left();
-        break;
-      case 'right':
-        right();
-        break;
-      case 'stop':
-        stop();
-        break;
-    };
-  });
-
-  // On disconnect
-  socket.on('disconnect', function () {
-
-    socket.emit('disconnected', socket.id);
-    console.log('NodeBot has lost connection!');
-
-  });
-
-});
-
-//motor functions 
-// motor functions
-
-  function reverse() {
-    leftWheel.rev(speed);
-    rightWheel.rev(speed);
-  }
-
-  function forward() {
-    leftWheel.fwd(speed);
-    rightWheel.fwd(speed);
-  }
-
-  function stop() {
-    leftWheel.stop();
-    rightWheel.stop();
-  }
-
-  function left() {
-    leftWheel.fwd(speed);
-    rightWheel.rev(speed);
-  }
-
-  function right() {
-    leftWheel.rev(speed);
-    rightWheel.fwd(speed);
-  }
-
-  function exit() {
-    leftWheel.rev(0);
-    rightWheel.rev(0);
-    setTimeout(process.exit, 1000); // stops with 1sec buffer
-  }
 
 // Particle Photon init
 var board = new five.Board({
@@ -93,9 +19,11 @@ var board = new five.Board({
 });
 
 board.on("ready", function () {
-  console.log('ready');
+  console.log('Board is ready!');
 
   //define wheel and motor contol
+  var speed;
+
   var rightWheel = new five.Motor({
     pins: {
       pwm: "D0",
@@ -112,29 +40,56 @@ board.on("ready", function () {
     invertPWM: true
   });
 
-  // set speed global variable
-  var speed = 255;
+  io.on('connection', function (socket) {
 
-  // map keys to functions with object
-  var keyMap = {
-    'up': forward,
-    'down': reverse,
-    'left': left,
-    'right': right,
-    'space': stop,
-    'q': exit
-  };
+    console.log("Node bot is awaiting commands!");
 
-  // input modes for manual robot control
-  var stdin = process.stdin;
-  stdin.setRawMode(true);
-  stdin.resume();
+    socket.on('command', function (command) {
 
-  stdin.on("keypress", function (chunk, key) {
-    if (!key || !keyMap[key.name]) return;
+      console.log("bot: " + command);
+      switch (command) {
 
-    keyMap[key.name]();
+        case 'forward':
+          speed = 255;
+          leftWheel.fwd(speed);
+          rightWheel.fwd(speed);
+          break;
+
+        case 'reverse':
+          speed = 120;
+          leftWheel.rev(speed);
+          rightWheel.rev(speed);
+          break;
+
+        case 'left':
+          var aSpeed = 220;
+          var bSpeed = 50;
+          leftWheel.fwd(aSpeed);
+          rightWheel.rev(bSpeed);
+          break;
+        case 'right':
+          var aSpeed = 50;
+          var bSpeed = 220;
+          leftWheel.rev(aSpeed);
+          rightWheel.fwd(bSpeed);
+          break;
+        case 'stop':
+          leftWheel.stop();
+          rightWheel.stop();
+          break;
+      }
+    });
+    
+    // On disconnect
+    socket.on('disconnect', function () {
+
+      socket.emit('disconnected', socket.id);
+      console.log('NodeBot has lost connection!');
+
+    });
+
   });
+
 });
 
 console.log("listening on port: ", port);
