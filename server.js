@@ -21,23 +21,24 @@ var board = new five.Board({
 board.on("ready", function () {
   console.log('Board is ready!');
 
-  //define wheel and motor contol
-  var speed;
-
-  var rightWheel = new five.Motor({
-    pins: {
-      pwm: "D0",
-      dir: "D4"
+  var motors = new five.Motors([{
+      pins: {
+        dir: 'D4',
+        pwm: 'D0'
+      },
+      invertPWM: true
     },
-    invertPWM: true
-  });
+    {
+      pins: {
+        dir: 'D5',
+        pwm: 'D1'
+      },
+      invertPWM: true
+    }
+  ]);
 
-  var leftWheel = new five.Motor({
-    pins: {
-      pwm: "D1",
-      dir: "D5"
-    },
-    invertPWM: true
+  board.repl.inject({
+    motors: motors
   });
 
   io.on('connection', function (socket) {
@@ -50,40 +51,34 @@ board.on("ready", function () {
       switch (command) {
 
         case 'forward':
-          speed = 255;
-          leftWheel.fwd(speed);
-          rightWheel.fwd(speed);
+          motors.forward(255);
           break;
-
         case 'reverse':
-          speed = 120;
-          leftWheel.rev(speed);
-          rightWheel.rev(speed);
+          motors.reverse(255);
           break;
 
         case 'left':
-          var aSpeed = 220;
-          var bSpeed = 50;
-          leftWheel.fwd(aSpeed);
-          rightWheel.rev(bSpeed);
+          motors[0].reverse(200);
+          motors[1].forward(200);
           break;
+
         case 'right':
-          var aSpeed = 50;
-          var bSpeed = 220;
-          leftWheel.rev(aSpeed);
-          rightWheel.fwd(bSpeed);
+          motors[0].forward(200);
+          motors[1].reverse(200);
           break;
+
         case 'stop':
-          leftWheel.stop();
-          rightWheel.stop();
+          motors.stop();
           break;
       }
     });
-    
+
     // On disconnect
     socket.on('disconnect', function () {
 
       socket.emit('disconnected', socket.id);
+      leftWheel.stop();
+      rightWheel.stop();
       console.log('NodeBot has lost connection!');
 
     });
